@@ -4,4 +4,5 @@ description: 'Provides Block types for block based features.'
 package: EZContent Block
 core_version_requirement: ^8.8 || ^9 || ^10
 dependencies:
-  - color_field:color_field
+  - ezcontent_paragraphs
+  - scheduler

@@ -1,0 +1,15 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - block_content.type.content_listing_component
+    - field.field.block_content.content_listing_component.field_author
+    - field.field.block_content.content_listing_component.field_tags
+id: block_content.content_listing_component.default
+targetEntityType: block_content
+bundle: content_listing_component
+mode: default
+content: {  }
+hidden:
+  field_author: true
+  field_tags: true
