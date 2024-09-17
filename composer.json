@@ -1,5 +1,5 @@
 {
-    "name": "drupal/ezcontent_block",
+    "name": "srijanone/ezcontent_block",
     "description": "Provides Block types for block based features.",
     "type": "drupal-module",
     "license": "GPL-2.0-or-later",
