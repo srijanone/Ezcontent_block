@@ -1,0 +1,9 @@
+{
+    "name": "drupal/ezcontent_block",
+    "description": "Provides Block types for block based features.",
+    "type": "drupal-module",
+    "license": "GPL-2.0-or-later",
+    "require": {
+        "drupal/core": "^8.7.7 || ^9 || ^10"
+    }
+}

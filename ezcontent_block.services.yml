@@ -1,0 +1,4 @@
+services:
+  ezcontent_block.helper_block:
+    class: Drupal\ezcontent_block\ContentListingHelperBlock
+    arguments: ['@entity_type.manager', '@views.executable']
