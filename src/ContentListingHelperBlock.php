@@ -12,6 +12,11 @@ use Drupal\views\ViewExecutableFactory;
  */
 class ContentListingHelperBlock {
 
+  // Define constants to avoid magic strings.
+  const DEFAULT_TAG_ARGUMENT = 'all';
+  const VIEW_NAME = 'article_content_listing';
+  const DISPLAY_ID = 'block_1';
+
   /**
    * Entity Type Manager.
    *
@@ -56,43 +61,82 @@ class ContentListingHelperBlock {
    * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
    */
   public function getContentListingBlock($block, $type = '', $page = 0) {
-    $data = $arguments = [];
-    if ($block->hasField('field_tags') && $block->field_tags->entity) {
-      $tagsEntities = $block->field_tags->getString();
-      $arguments[] = str_replace(', ', '+', $tagsEntities);
-    }
-    else {
-      $arguments[] = 'all';
-    }
-    if ($block->hasField('field_author') && $block->field_author->entity) {
-      $authorEntities = $block->field_author->getString();
-      $arguments[] = str_replace(', ', '+', $authorEntities);
-    }
-    else {
-      $arguments[] = 'all';
-    }
-
-    $viewObject = $this->entityTypeManager->getStorage('view')->load('article_content_listing');
-    $view = $this->viewExecutable->get($viewObject);
+    $arguments = $this->getArguments($block);
+    $view = $this->getView();
 
     if (is_object($view)) {
-      $view->setDisplay('block_1');
+      $view->setDisplay(self::DISPLAY_ID);
       $view->setArguments($arguments);
-      if ($type === 'result') {
-        $view->setCurrentPage($page);
-        $view->execute();
-        // Handle pager in case of JSON:API response.
-        $data['rows'] = $view->result;
-        $data['total_rows'] = $view->total_rows;
-        $data['item_per_page'] = $view->getItemsPerPage();
-        return $data;
-      }
-      $view->execute();
-      $data['rows'] = $view->buildRenderable('block_1');
 
+      return $this->executeView($view, $type, $page);
     }
 
-    return $data;
+    return [];
   }
 
+  /**
+   * Retrieve arguments for the view.
+   *
+   * @param object $block
+   *   Block entity to preprocess.
+   *
+   * @return array
+   *   Arguments for the view.
+   */
+  protected function getArguments($block) {
+    $arguments = [];
+
+    // Get tag entities.
+    $tagsEntities = $block->hasField('field_tags') ? $block->field_tags->getString() : null;
+    $arguments[] = str_replace(', ', '+', $tagsEntities) ?? self::DEFAULT_TAG_ARGUMENT;
+
+    // Get author entities.
+    $authorEntities = $block->hasField('field_author') ? $block->field_author->getString() : null;
+    $arguments[] = str_replace(', ', '+', $authorEntities) ?? self::DEFAULT_TAG_ARGUMENT;
+
+    return $arguments;
+  }
+
+  /**
+   * Retrieve the view object.
+   *
+   * @return \Drupal\views\ViewExecutable|null
+   *   The view object or null if not found.
+   */
+  protected function getView() {
+    $viewObject = $this->entityTypeManager->getStorage('view')->load(self::VIEW_NAME);
+    return $this->viewExecutable->get($viewObject);
+  }
+
+  /**
+   * Execute the view and return the results.
+   *
+   * @param \Drupal\views\ViewExecutable $view
+   *   The view object.
+   * @param string $type
+   *   Type of response to be returned.
+   * @param int $page
+   *   The page number.
+   *
+   * @return array
+   *   Preprocessed data for the given block.
+   */
+  protected function executeView($view, $type, $page) {
+    if ($type === 'result') {
+      $view->setCurrentPage($page);
+      $view->execute();
+
+      // Handle pager in case of JSON:API response.
+      return [
+        'rows' => $view->result,
+        'total_rows' => $view->total_rows,
+        'item_per_page' => $view->getItemsPerPage(),
+      ];
+    }
+
+    $view->execute();
+    return [
+      'rows' => $view->buildRenderable(self::DISPLAY_ID),
+    ];
+  }
 }
