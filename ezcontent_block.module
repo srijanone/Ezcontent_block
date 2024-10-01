@@ -5,13 +5,14 @@
  * Used for maintaining content listing component changes.
  */
 
+// Define constants to avoid magic strings.
+  define('BLOCK_TYPE_CONTENT_LISTING_COMPONENT', 'content_listing_component');
+  define('VIEW_MODE_FULL', 'full');
+
 /**
  * Implements hook_preprocess_block().
  */
 function ezcontent_block_preprocess_block(&$variables) {
-  // Define constants to avoid magic strings.
-  define('BLOCK_TYPE_CONTENT_LISTING_COMPONENT', 'content_listing_component');
-  define('VIEW_MODE_FULL', 'full');
 
   if (in_array($variables['plugin_id'], [
     BLOCK_TYPE_CONTENT_LISTING_COMPONENT,
