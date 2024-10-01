@@ -31,16 +31,13 @@ function ezcontent_block_preprocess_block(&$variables) {
         $variables['#attached']['library'][] = 'ezcontent_block/ezcontent_listing_css';
         $block_view_mode = $blockContentList['#view_mode'];
         $helper_block_service = \Drupal::service('ezcontent_block.helper_block');
-
-        switch ($block_view_mode) {
-          case VIEW_MODE_FULL:
-            $content_list_data = $helper_block_service->getContentListingBlock($block);
+        if ($block_view_mode == VIEW_MODE_FULL) {
+             $content_list_data = $helper_block_service->getContentListingBlock($block);
             if (isset($routeOptions['_layout_builder']) || isset($routeOptions['_admin_route'])) {
               $variables['content']['content'] = array_merge($blockContentList, $content_list_data);
             } else {
               $variables['content'] = array_merge($blockContentList, $content_list_data);
             }
-            break;
         }
       }
     }
