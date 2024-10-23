@@ -5,6 +5,6 @@
     "license": "GPL-2.0-or-later",
     "require": {
         "drupal/core": "^10",
-        "srijanone/ezcontent_paragraphs": "dev-main"
+        "srijanone/ezcontent_paragraphs": "^1.0.1"
     }
 }
